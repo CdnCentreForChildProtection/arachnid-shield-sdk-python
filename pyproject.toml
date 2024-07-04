@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "arachnid-shield-sdk"
+version = "1.0.0"
+description = "An SDK to work with the Arachnid Shield API"
+
+authors = [
+    "Aalekh Patel <aalekh@protectchildren.ca>",
+    "Mark Johnston <mark@protectchildren.ca>",
+]
+
+readme = "README.md"
+homepage = "https://projectarachnid.ca/en/#shield"
+documentation = "https://projectarachnid.ca/en/#shield" # FIXME: Put the real docs page here.
+keywords = ["arachnid-shield", "sdk"]
+
+packages = [
+    {include = "arachnid_shield_sdk"},
+]
+include = [
+    "CHANGELOG.md",
+    "arachnid_shield_sdk/py.typed"
+]
+exclude = [
+    "tests",
+    "openapi.json"
+]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-mock = "*"
+coverage = "*"
+pytest-asyncio = "*"
+pytest-httpx = "*"
+pytest-cov = "*"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+httpx = ">=0.15.4,<0.25.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target_version = ['py38', 'py39', 'py310', 'py311']
+exclude = '''
+(
+  /(
+    | \.git
+    | \.venv
+    | \.mypy_cache
+  )/
+)
+'''
+
+[tool.isort]
+line_length = 120
+profile = "black"
+
+[tool.pytest.ini_options]
+markers = [
+  "integration: marks that test requires a public-api instance to be devastaged. (deselect with '-m \"not integration\"')"
+]
