@@ -3,8 +3,6 @@ An SDK for consuming the Arachnid Shield API.
 
 ## Installation
 
-(From `bergpi`)
-
 ```sh
 pip install arachnid-shield-sdk
 ```
