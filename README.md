@@ -17,34 +17,18 @@ This client acts simply as a global resource that may live as long as your appli
 
 ### Vanilla Python (Sync)
 
+You may use the `ArachnidShield` client that has all the methods needed to consume the Arachnid Shield API.
+
 ```python
 from arachnid_shield_sdk import ArachnidShield
 
 shield = ArachnidShield(username="", password="")
-
-
-class HarmfulMediaFoundException(Exception):
-    """Raised when a CSAM/Harmful to Children media is found to be uploaded on the server"""
-    user = None
-    scanned_media_metadata = None
     
-    def __init__(self, user, scanned_media_metadata):
-        self.user = user
-        self.scanned_media_metadata = scanned_media_metadata
-
-    
-def process_media_for_user(user_id, contents):
-    """
-    
-    Raises:
-        HarmfulMediaFoundException If the 
-    """
+def process_media(contents):
 
     scanned_media = shield.scan_media_from_bytes(contents, "image/jpeg")
     if scanned_media.matches_known_image:
-        raise HarmfulMediaFoundException(user=user_id, scanned_media_metadata=scanned_media)
-    
-    # do more processing here.
+        print(f"harmful media found!: {scanned_media}")
     ... 
 
 
@@ -53,14 +37,17 @@ def main():
     with open("some-image.jpeg", "rb") as f:
         contents = f.read()
     
-    process_media_for_user(user_id=1, contents=contents)
+    process_media_for_user(contents)
 
 
 if __name__ == '__main__':
     main()
+
 ```
 
 ### Vanilla Python (Async)
+
+In `async` environments, you may use the `ArachnidShieldAsync` client which has the exact same interface as the `ArachnidShield` client but where all the methods are awaitable coroutines.
 
 ```python
 import asyncio
@@ -68,37 +55,21 @@ from arachnid_shield_sdk import ArachnidShieldAsync as ArachnidShield
 
 shield = ArachnidShield(username="", password="")
 
-
-class HarmfulMediaFoundException(Exception):
-    """Raised when a CSAM/Harmful to Children media is found to be uploaded on the server"""
-    user = None
-    scanned_media_metadata = None
-    
-    def __init__(self, scanned_media_metadata):
-        self.scanned_media_metadata = scanned_media_metadata
-
-    
 async def process_media(contents):
-    """
-    
-    Raises:
-        HarmfulMediaFoundException If the 
-    """
 
     scanned_media = await shield.scan_media_from_bytes(contents, "image/jpeg")
     if scanned_media.matches_known_image:
-        raise HarmfulMediaFoundException(scanned_media)
-    
-    # do more processing here.
+        print(f"harmful media found!: {scanned_media}")
     ... 
 
 
 async def main():
     with open("some-image.jpeg", "rb") as f:
         contents = f.read()
-    await process_media(contents=contents)
+    await process_media(contents)
 
 
 if __name__ == '__main__':
     asyncio.get_event_loop().run_until_complete(main())
+
 ```
