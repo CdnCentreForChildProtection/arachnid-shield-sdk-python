@@ -9,9 +9,21 @@ authors = [
 ]
 
 readme = "README.md"
+license = {file = "LICENSE"}
+
 homepage = "https://projectarachnid.ca/en/#shield"
-documentation = "https://projectarachnid.ca/en/#shield" # FIXME: Put the real docs page here.
+documentation = "https://projectarachnid.ca/en/#shield"
+repository = "https://github.com/CdnCentreForChildProtection/arachnid-shield-sdk-python/"
 keywords = ["arachnid-shield", "sdk"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 
 packages = [
     {include = "arachnid_shield_sdk"},
