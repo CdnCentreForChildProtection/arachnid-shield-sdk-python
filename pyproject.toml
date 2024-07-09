@@ -9,7 +9,7 @@ authors = [
 ]
 
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "LICENSE"
 
 homepage = "https://shield.projectarachnid.com/"
 documentation = "https://shield.projectarachnid.com/"
