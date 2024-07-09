@@ -9,7 +9,7 @@ pip install arachnid-shield-sdk
 
 ## Usage
 
-First, obtain login credentials by contacting [Project Arachnid](https://projectarachnid.ca/en/contact). 
+First, obtain login credentials by contacting [Project Arachnid](https://shield.projectarachnid.com/). 
 
 This client acts simply as a global resource that may live as long as your application. So you may use it in different ways.
 

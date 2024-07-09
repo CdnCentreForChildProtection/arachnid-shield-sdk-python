@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "arachnid-shield-sdk"
-version = "1.0.0"
+version = "0.1.0"
 description = "An SDK to work with the Arachnid Shield API"
 
 authors = [
@@ -11,10 +11,10 @@ authors = [
 readme = "README.md"
 license = {file = "LICENSE"}
 
-homepage = "https://projectarachnid.ca/en/#shield"
-documentation = "https://projectarachnid.ca/en/#shield"
+homepage = "https://shield.projectarachnid.com/"
+documentation = "https://shield.projectarachnid.com/"
 repository = "https://github.com/CdnCentreForChildProtection/arachnid-shield-sdk-python/"
-keywords = ["arachnid-shield", "sdk"]
+keywords = ["arachnid-shield", "sdk", "arachnid"]
 
 classifiers = [
     "Development Status :: 4 - Beta",
