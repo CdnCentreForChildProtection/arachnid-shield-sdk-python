@@ -21,6 +21,13 @@ class MatchType(str, Enum):
     Exact = "exact"
     Near = "near"
 
+    @classmethod
+    def from_value(cls, value: typing.Optional[str]) -> typing.Optional["MatchType"]:
+        if value is None:
+            return None
+        return cls(value)
+
+
 @dataclasses.dataclass
 class NearMatchDetail:
     """A record of a near match (based on perceptual hashing) to a known image in our database.
@@ -109,7 +116,7 @@ class ScannedMedia:
             sha1_base32=src_dict["sha1_base32"],
             size_bytes=src_dict["size_bytes"],
             classification=classification,
-            match_type=src_dict["match_type"],
+            match_type=MatchType.from_value(src_dict["match_type"]),
             near_match_details=near_match_details,
         )
 
