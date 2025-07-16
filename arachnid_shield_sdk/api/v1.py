@@ -30,13 +30,21 @@ class ArachnidShield(_ArachnidShield):
         super().__init__(username=username, password=password)
         self.__client = super()._build_sync_http_client()
 
-    def scan_media_from_bytes(self, contents: typing.Union[bytes, io.BytesIO], mime_type: str) -> ScannedMedia:
+    def scan_media_from_bytes(
+        self, 
+        contents: typing.Union[bytes, io.BytesIO], 
+        mime_type: str,
+        timeout: typing.Optional[httpx.Timeout] = None,
+    ) -> ScannedMedia:
         """Given the contents of some media, along with a mime type,
         scan the contents for matches against known child abuse media.
 
         Args:
             contents: The raw bytes that represent the media.
             mime_type: The mimetype of the media.
+            timeout:
+                If provided, will set a timeout configuration for the underlying http client. 
+                Otherwise, will disable the timeout entirely.
 
         Returns:
             The record of a successful media scan.
@@ -45,10 +53,13 @@ class ArachnidShield(_ArachnidShield):
             `ArachnidShieldError` on a failed but complete interaction with
             the Arachnid Shield API, and `httpx.HTTPError` on any other connection failures.
         """
-        return self.scan_media_from_bytes_with_config(ScanMediaFromBytes(contents=contents, mime_type=mime_type))
+        return self.scan_media_from_bytes_with_config(ScanMediaFromBytes(contents=contents, mime_type=mime_type), timeout=timeout)
 
     def scan_media_from_file(
-            self, filepath: pathlib.Path, mime_type_override: typing.Optional[str] = None
+        self, 
+        filepath: pathlib.Path, 
+        mime_type_override: typing.Optional[str] = None, 
+        timeout: typing.Optional[httpx.Timeout] = None,
     ) -> ScannedMedia:
         """Given path to the media file to scan, and an optional
         value for mime_type that bypasses guessing it based of the filepath,
@@ -60,6 +71,9 @@ class ArachnidShield(_ArachnidShield):
             mime_type_override:
                 If provided, will use this as the mime_type
                 instead of guessing it from the filepath.
+            timeout:
+                If provided, will set a timeout configuration for the underlying http client. 
+                Otherwise, will disable the timeout entirely.
 
         Returns:
             The record of a successful media scan.
@@ -78,7 +92,7 @@ class ArachnidShield(_ArachnidShield):
                         detail=(
                             f"Failed to identify mime_type for {filepath}. "
                             f"You may specify it explicitly by providing "
-                            f"`force_mime_type`."
+                            f"`mime_type_override`."
                         )
                     )
                 )
@@ -87,7 +101,7 @@ class ArachnidShield(_ArachnidShield):
             contents = f.read()
 
         config = ScanMediaFromBytes(contents=contents, mime_type=mime_type)
-        return self.scan_media_from_bytes_with_config(config)
+        return self.scan_media_from_bytes_with_config(config, timeout=timeout)
 
     def scan_media_from_url(self, url: str) -> ScannedMedia:
         """Given the absolute url that hosts the media we wish to scan,
@@ -105,12 +119,19 @@ class ArachnidShield(_ArachnidShield):
         """
         return self.scan_media_from_url_with_config(ScanMediaFromUrl(url=url))
 
-    def scan_media_from_bytes_with_config(self, config: ScanMediaFromBytes) -> ScannedMedia:
+    def scan_media_from_bytes_with_config(
+        self, 
+        config: ScanMediaFromBytes, 
+        timeout: typing.Optional[httpx.Timeout] = httpx.Timeout(5)
+    ) -> ScannedMedia:
         """Given the contents of some media, along with a mime type,
         scan the contents for matches against known child abuse media.
 
         Args:
             config: The context that will be used to build the request.
+            timeout:
+                If provided explicitly, a configuration passed to the underlying http client. 
+                It defaults to 5 seconds, and can be disabled by setting it to `None`.
 
         Returns:
             ScannedMedia: A record of a successful scan of the media.
@@ -125,6 +146,7 @@ class ArachnidShield(_ArachnidShield):
             url=url,
             headers={"Content-Type": config.mime_type},
             content=config.contents,
+            timeout=timeout,
         )
 
         if response.is_client_error or response.is_server_error:
@@ -203,13 +225,21 @@ class ArachnidShieldAsync(_ArachnidShield):
         super().__init__(username=username, password=password)
         self.__client = super()._build_async_http_client()
 
-    async def scan_media_from_bytes(self, contents: typing.Union[bytes, io.BytesIO], mime_type: str) -> ScannedMedia:
+    async def scan_media_from_bytes(
+        self, 
+        contents: typing.Union[bytes, io.BytesIO], 
+        mime_type: str,
+        timeout: typing.Optional[httpx.Timeout] = None,
+    ) -> ScannedMedia:
         """Given the contents of some media, along with a mime type,
         scan the contents for matches against known child abuse media.
 
         Args:
             contents: The raw bytes that represent the media.
             mime_type: The mimetype of the media.
+            timeout:
+                If provided, will set a timeout configuration for the underlying http client. 
+                Otherwise, will disable the timeout entirely.
 
         Returns:
             The record of a successful media scan.
@@ -219,7 +249,7 @@ class ArachnidShieldAsync(_ArachnidShield):
             the Arachnid Shield API, and `httpx.HTTPError` on any other connection failures.
         """
 
-        return await self.scan_media_from_bytes_with_config(ScanMediaFromBytes(contents=contents, mime_type=mime_type))
+        return await self.scan_media_from_bytes_with_config(ScanMediaFromBytes(contents=contents, mime_type=mime_type), timeout=timeout)
 
     async def scan_media_from_url(self, url: str) -> ScannedMedia:
         """Given the absolute url that hosts the media we wish to scan,
@@ -238,7 +268,10 @@ class ArachnidShieldAsync(_ArachnidShield):
         return await self.scan_media_from_url_with_config(ScanMediaFromUrl(url=url))
 
     async def scan_media_from_file(
-            self, filepath: pathlib.Path, mime_type_override: typing.Optional[str] = None
+        self, 
+        filepath: pathlib.Path, 
+        mime_type_override: typing.Optional[str] = None, 
+        timeout: typing.Optional[httpx.Timeout] = None,
     ) -> ScannedMedia:
         """Given path to the media file to scan, and an optional
         value for mime_type that bypasses guessing it based of the filepath,
@@ -250,6 +283,9 @@ class ArachnidShieldAsync(_ArachnidShield):
             mime_type_override:
                 If provided, will use this as the mime_type
                 instead of guessing it from the filepath.
+            timeout:
+                If provided, will set a timeout configuration for the underlying http client. 
+                Otherwise, will disable the timeout entirely.
 
         Returns:
             The record of a successful media scan.
@@ -268,7 +304,7 @@ class ArachnidShieldAsync(_ArachnidShield):
                         detail=(
                             f"Failed to identify mime_type for {filepath}. "
                             f"You may specify it explicitly by providing "
-                            f"`force_mime_type`."
+                            f"`mime_type_override`."
                         )
                     )
                 )
@@ -277,14 +313,21 @@ class ArachnidShieldAsync(_ArachnidShield):
             contents = f.read()
 
         config = ScanMediaFromBytes(contents=contents, mime_type=mime_type)
-        return await self.scan_media_from_bytes_with_config(config)
+        return await self.scan_media_from_bytes_with_config(config, timeout=timeout)
 
-    async def scan_media_from_bytes_with_config(self, config: ScanMediaFromBytes) -> ScannedMedia:
+    async def scan_media_from_bytes_with_config(
+        self, 
+        config: ScanMediaFromBytes, 
+        timeout: typing.Optional[httpx.Timeout] = httpx.Timeout(5)
+    ) -> ScannedMedia:
         """Given the contents of some media, along with a mime type,
         scan the contents for matches against known child abuse media.
 
         Args:
             config: The context that will be used to build the request.
+            timeout:
+                If provided explicitly, a configuration passed to the underlying http client. 
+                It defaults to 5 seconds, and can be disabled by setting it to `None`.
 
         Returns:
             ScannedMedia: A record of a successful scan of the media.
@@ -300,6 +343,7 @@ class ArachnidShieldAsync(_ArachnidShield):
             url=url,
             headers={"Content-Type": config.mime_type},
             content=config.contents,
+            timeout=timeout,
         )
 
         if response.is_client_error or response.is_server_error:
