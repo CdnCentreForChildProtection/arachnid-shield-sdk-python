@@ -1,0 +1,36 @@
+name: Run integration tests
+on:
+    push:
+        branches:
+            - 'main'
+    pull_request:
+        branches:
+            - 'main'
+
+jobs:
+  integration-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        poetry-version: ["latest", "main", "1.8.4"]
+        os: [ubuntu-22.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install all extras for running tests.
+        run: poetry install --all-extras -v
+      - name: Run tests
+        env:
+            ARACHNID_SHIELD_USERNAME: ${{ secrets.ARACHNID_SHIELD_CI_USERNAME }}
+            ARACHNID_SHIELD_PASSWORD: ${{ secrets.ARACHNID_SHIELD_CI_PASSWORD }}
+            ARACHNID_SHIELD_URL: ${{ secrets.ARACHNID_SHIELD_CI_URL }}
+        run: |
+            poetry run pytest -m '' tests -ss
