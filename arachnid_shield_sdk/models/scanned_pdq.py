@@ -36,6 +36,11 @@ class PDQMatch:
             near_match_details=near_match_details,
         )
 
+    @property
+    def matches_known_media(self) -> bool:
+        """Determine whether the scanned media matches any known media."""
+        return self.classification is not None and self.classification != MediaClassification.NoKnownMatch
+
 
 @dataclasses.dataclass
 class ScannedPDQHashes:
