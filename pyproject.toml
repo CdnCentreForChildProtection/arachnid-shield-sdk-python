@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "arachnid-shield-sdk"
-version = "0.2.0"
+version = "0.2.2"
 description = "An SDK to work with the Arachnid Shield API"
 
 authors = [
