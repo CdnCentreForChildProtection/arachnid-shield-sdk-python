@@ -32,7 +32,7 @@ class PDQMatch:
             classification = MediaClassification(classification)
         return cls(
             classification=classification,
-            match_type=MatchType(src_dict["match_type"]),
+            match_type=MatchType.from_value(src_dict["match_type"]),
             near_match_details=near_match_details,
         )
 
@@ -62,7 +62,7 @@ class ScannedPDQHashes:
                 near_match_details = NearMatchDetail.from_dict(near_match_details)
             scanned_hashes[key] = PDQMatch(
                 classification=value['classification'],
-                match_type=MatchType(value['match_type']),
+                match_type=MatchType.from_value(value['match_type']),
                 near_match_details=near_match_details
             )
         return cls(
