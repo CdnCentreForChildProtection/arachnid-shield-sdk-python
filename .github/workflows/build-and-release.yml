@@ -20,7 +20,7 @@ jobs:
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.ARACHNID_SHIELD_SDK_PYPI_TOKEN }}
         run: |
-            poetry publish --build --repository pypi
+            poetry publish --build
       - name: Save built package.
         uses: actions/upload-artifact@v4
         with:
